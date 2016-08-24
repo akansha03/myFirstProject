@@ -1,0 +1,41 @@
+package com.huawei.vmall.tests.scripts.StoreCredit;
+
+/**Multiply the array elements expect the current element
+ * 
+ * @author aWX291341
+ * For input {2,3,5,7} expected answer is {105,70,42,30}
+ * 
+ *{3*5*7,2*5*7,2*3*7, 2*3*5}
+ *
+ */
+class MultiplyArrayElements
+{
+  public static void main(String[] args)
+  {
+
+   int ar[] = {2,3,5,7};
+   int arrayL = ar.length;
+   int ar1[] = new int[arrayL];
+   
+   int num,fact = 1;
+   for(int i=0;i<arrayL;i++)
+   {
+	
+    num = ar[i]; 
+    
+    for(int j=0;j<arrayL;j++)
+    {
+      if(num!=ar[j])
+      fact = fact*ar[j];
+    }   
+    
+    ar1[i] = fact;
+    fact = 1;
+   }
+
+  for(int i=0;i<arrayL;i++)
+    System.out.print(ar1[i]+" ");   
+
+   }
+
+}
