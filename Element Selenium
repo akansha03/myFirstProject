@@ -1,0 +1,2115 @@
+/*
+ * Class Name : Element
+ *
+ * Description: All the web element based action words are placed in this file
+ * 				User can access by typing Element.{Action name}
+ * Variables: NA			
+ * */
+package com.huawei.vmall.tests.core.baseaw;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.Augmenter;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.interactions.Action;
+
+import com.huawei.vmall.tests.core.Log;
+import com.huawei.vmall.tests.core.Runner;
+import com.huawei.vmall.tests.framework.elements.AdminElements;
+
+public class Element {
+
+	public static final int ID = 1;
+	public static final int CLASS = 2;
+	public static final int CSS = 3;
+	public static final int XPATH = 4;
+	public static final int LINK = 5;
+	public static final int PARTIALLINK = 6;
+	public static final int NAME = 7;
+	public static final int TAGNAME = 8;
+	
+	
+
+	/*
+	 * Function name : findWebElement(RemoteWebDriver driver,int
+	 * elementType,String element)
+	 * 
+	 * Access method : private function
+	 * 
+	 * Description: The corresponding Webelement is returned based on the type
+	 * and value pair
+	 * 
+	 * Variables: Name | Type | Values | Description
+	 * ----------------------------
+	 * -----------------------------------------------------------------
+	 * elementType | int | Element.ID |What type of element click which needs |
+	 * | Element.CLASS |to be used in the has to be mentioned | | Element.CSS
+	 * |here | | Element.XPATH | | | Element.LINK | | | Element.PARTIALLINK | |
+	 * | Element.NAME | | | Element.TAGNAME |
+	 * ------------------------------------
+	 * --------------------------------------------------------- using | String
+	 * | NA |The value of the element which can be | | |stored in corresponding
+	 * page element files.
+	 * ------------------------------------------------------
+	 * ---------------------------------------
+	 * 
+	 * Return value:
+	 * Type				| Description
+	 * ---------------------------------------------------------------------------------------------
+	 * WebElement		| The requested web element will be returned to the caller.
+	 * 
+	 * */
+	public static WebElement findWebElement(RemoteWebDriver driver,int elementType,String using){
+		WebElement  ret = null;
+		switch(elementType){
+			case ID:
+				ret = driver.findElement(By.id(using));
+				break;
+			case CLASS:
+				ret = driver.findElementByClassName(using);
+				break;
+			case CSS:
+				ret = driver.findElementByCssSelector(using);
+				break;
+			case XPATH:
+				ret = driver.findElementByXPath(using);
+				break;
+			case LINK:
+				ret = driver.findElementByLinkText(using);
+				break;
+			case PARTIALLINK:
+				ret = driver.findElementByPartialLinkText(using);
+				break;
+			case NAME:
+				ret= driver.findElementByName(using);
+				break;
+			case TAGNAME:
+				ret= driver.findElementByTagName(using);
+				break;
+			default:
+				ret = null;
+				break;
+		}
+		return ret;
+	}
+
+	
+	public static List<WebElement> findWebElements(RemoteWebDriver driver,int elementType,String using){
+		List<WebElement>  ret = null;
+		switch(elementType){
+			case ID:
+				ret = driver.findElements(By.id(using));
+				break;
+			case CLASS:
+				ret = driver.findElements(By.className(using));
+				break;
+			case CSS:
+				ret = driver.findElements(By.cssSelector(using));
+				break;
+			case XPATH:
+				ret = driver.findElements(By.xpath(using));
+				break;
+			case LINK:
+				ret = driver.findElements(By.linkText(using));
+				break;
+			case PARTIALLINK:
+				ret = driver.findElements(By.partialLinkText(using));
+				break;
+			case NAME:
+				ret= driver.findElements(By.name(using));
+				break;
+			case TAGNAME:
+				ret= driver.findElements(By.tagName(using));
+				break;
+			default:
+				ret = null;
+				break;
+		}
+		return ret;
+	}
+
+	/*
+	 * Function name : click(RemoteWebDriver driver,int elementType,String
+	 * element)
+	 * 
+	 * Access method : Element.click(elementType,element);
+	 * 
+	 * Description: The requested element type will be clicked on the given page
+	 * 
+	 * Variables: Name | Type | Values | Description
+	 * ----------------------------
+	 * -----------------------------------------------------------------
+	 * elementType | int | Element.ID |What type of element click which needs |
+	 * | Element.CLASS |to be used in the has to be mentioned | | Element.CSS
+	 * |here | | Element.XPATH | | | Element.LINK | | | Element.PARTIALLINK | |
+	 * | Element.NAME | | | Element.TAGNAME |
+	 * ------------------------------------
+	 * --------------------------------------------------------- element |
+	 * String | NA |The value of the element which can be | | |stored in
+	 * corresponding page element files.
+	 * ----------------------------------------
+	 * -----------------------------------------------------
+	 */
+
+	public static void click(RemoteWebDriver driver, int elementType,
+			String element) {
+
+		try {
+		  //  Element.waitElement(driver, elementType, element);
+			WebElement elem = findWebElement(driver, elementType, element);
+			
+			elem.click();
+			Element.waitForPageLoaded(driver);
+
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	}
+	
+	
+	
+	
+	public static void clickOnSearchButton(RemoteWebDriver driver)
+	{
+		try {
+			waitElement(driver, Element.XPATH, AdminElements.xpath_review_SearchBtn);
+			WebElement elem = findWebElement(driver, Element.XPATH, AdminElements.xpath_review_SearchBtn);
+			
+			elem.click();
+			Element.waitForPageLoaded(driver);
+			} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ AdminElements.xpath_review_SearchBtn);
+		}
+	}
+
+	public static void clickWithoutPageLoad(RemoteWebDriver driver, int elementType,
+			String element) {
+		try {
+            
+			WebElement elem = findWebElement(driver, elementType, element);
+			elem.click();
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	}
+	
+	
+	/*public static void click_Tab(RemoteWebDriver driver, int elementType,
+			String element) {
+
+		try {
+			WebElement elem = findWebElement(driver, elementType, element);
+			elem.sendKeys(Keys.TAB);
+			
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	}
+*/
+	/*
+	 * Function name : submit(RemoteWebDriver driver,int elementType,String
+	 * element)
+	 * 
+	 * Access method : Element.submit(elementType,element);
+	 * 
+	 * Description: The requested element type will be submitted on the given
+	 * page
+	 * 
+	 * Variables: Name | Type | Values | Description
+	 * ----------------------------
+	 * -----------------------------------------------------------------
+	 * elementType | int | Element.ID |What type of element click which needs |
+	 * | Element.CLASS |to be used in the has to be mentioned | | Element.CSS
+	 * |here | | Element.XPATH | | | Element.LINK | | | Element.PARTIALLINK | |
+	 * | Element.NAME | | | Element.TAGNAME |
+	 * ------------------------------------
+	 * --------------------------------------------------------- element |
+	 * String | NA |The value of the element which can be | | |stored in
+	 * corresponding page element files.
+	 * ----------------------------------------
+	 * -----------------------------------------------------
+	 */
+
+	public static void submit(RemoteWebDriver driver, int elementType,
+			String element) {
+
+		try {
+			WebElement elem = findWebElement(driver, elementType, element);
+			elem.submit();
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	}
+
+	/*
+	 * Function name : doubleClick(RemoteWebDriver driver,int elementType,String
+	 * element)
+	 * 
+	 * Access method : Element.doubleClick(elementType,element);
+	 * 
+	 * Description: The requested element type will be double clicked on the
+	 * given page
+	 * 
+	 * Variables: Name | Type | Values | Description
+	 * ----------------------------
+	 * -----------------------------------------------------------------
+	 * elementType | int | Element.ID |What type of element click which needs |
+	 * | Element.CLASS |to be used in the has to be mentioned | | Element.CSS
+	 * |here | | Element.XPATH | | | Element.LINK | | | Element.PARTIALLINK | |
+	 * | Element.NAME | | | Element.TAGNAME |
+	 * ------------------------------------
+	 * --------------------------------------------------------- element |
+	 * String | NA |The value of the element which can be | | |stored in
+	 * corresponding page element files.
+	 * ----------------------------------------
+	 * -----------------------------------------------------
+	 */
+
+	public static void doubleClick(RemoteWebDriver driver, int elementType,
+			String element) {
+
+		try {
+			WebElement elem = findWebElement(driver, elementType, element);
+			Actions mouse = new Actions(driver);
+			mouse.doubleClick(elem).build().perform();
+			Runner.sleep(100L);
+
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	}
+
+	/*
+	 * Function name : hover(RemoteWebDriver driver,int elementType,String
+	 * element)
+	 * 
+	 * Access method : Element.hover(elementType,element);
+	 * 
+	 * Description: The mouse hovering operation will be performed on the
+	 * requested element type/value
+	 * 
+	 * Variables: Name | Type | Values | Description
+	 * ----------------------------
+	 * -----------------------------------------------------------------
+	 * elementType | int | Element.ID |What type of element click which needs |
+	 * | Element.CLASS |to be used in the has to be mentioned | | Element.CSS
+	 * |here | | Element.XPATH | | | Element.LINK | | | Element.PARTIALLINK | |
+	 * | Element.NAME | | | Element.TAGNAME |
+	 * ------------------------------------
+	 * --------------------------------------------------------- element |
+	 * String | NA |The value of the element which can be | | |stored in
+	 * corresponding page element files.
+	 * ----------------------------------------
+	 * -----------------------------------------------------
+	 */
+
+	public static void hover(RemoteWebDriver driver, int elementType,
+			String element) {
+
+		try {
+			
+			Runner.sleep(2000L);
+		
+			WebElement elem = findWebElement(driver, elementType, element);
+			Actions mouse = new Actions(driver);
+			
+			mouse.moveToElement(elem).perform();
+		
+
+		} catch (Exception e) {
+			
+			
+			WebElement elem = findWebElement(driver, elementType, element);
+			Actions mouse = new Actions(driver);
+			
+			mouse.moveToElement(elem).perform();
+			
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	}
+
+	/*
+	 * Function name : inputText(RemoteWebDriver driver,int elementType,String
+	 * element, String text)
+	 * 
+	 * Access method : Element.inputText(elementType,element,text);
+	 * 
+	 * Description: The given text will be entered in the element space.
+	 * 
+	 * Variables: Name | Type | Values | Description
+	 * ----------------------------
+	 * -----------------------------------------------------------------
+	 * elementType | int | Element.ID |What type of element click which needs |
+	 * | Element.CLASS |to be used in the has to be mentioned | | Element.CSS
+	 * |here | | Element.XPATH | | | Element.LINK | | | Element.PARTIALLINK | |
+	 * | Element.NAME | | | Element.TAGNAME |
+	 * ------------------------------------
+	 * --------------------------------------------------------- element |
+	 * String | NA |The value of the element which can be | | |stored in
+	 * corresponding page element files.
+	 * ----------------------------------------
+	 * ----------------------------------------------------- text | String | NA
+	 * |The string which needs to be entered in | | |the element space
+	 * ----------
+	 * ----------------------------------------------------------------
+	 * -------------------
+	 */
+
+	public static void inputText(RemoteWebDriver driver, int elementType,
+			String element, String text) {
+
+		try {
+			
+			WebElement elem = findWebElement(driver, elementType, element);
+		
+			elem.sendKeys(text);
+			Runner.sleep(2000L);
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	}
+
+	
+	/*
+	 * Function name : selectSingleItem(RemoteWebDriver driver,int
+	 * elementType,String element, String text)
+	 * 
+	 * Access method : Element.selectSingleItem(elementType,element,text);
+	 * 
+	 * Description: The given text item will be selected in the given dropdown
+	 * list.
+	 * 
+	 * Variables: Name | Type | Values | Description
+	 * ----------------------------
+	 * -----------------------------------------------------------------
+	 * elementType | int | Element.ID |What type of element click which needs |
+	 * | Element.CLASS |to be used in the has to be mentioned | | Element.CSS
+	 * |here | | Element.XPATH | | | Element.LINK | | | Element.PARTIALLINK | |
+	 * | Element.NAME | | | Element.TAGNAME |
+	 * ------------------------------------
+	 * --------------------------------------------------------- element |
+	 * String | NA |The value of the element which can be | | |stored in
+	 * corresponding page element files.
+	 * ----------------------------------------
+	 * ----------------------------------------------------- text | String | NA
+	 * |The text which needs to be clicked in the | | |dropdown element
+	 * ----------
+	 * ----------------------------------------------------------------
+	 * -------------------
+	 */
+
+	public static void selectSingleItem(RemoteWebDriver driver,
+			int elementType, String element, String text) {
+
+		try {
+			waitElement(driver, elementType, element);
+			WebElement elem = findWebElement(driver, elementType, element);
+			
+			Select dropdown = new Select(elem);
+			dropdown.selectByVisibleText(text);
+			Runner.sleep(100L);
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	}
+	
+	public static void selectAllOption(RemoteWebDriver driver,
+			int elementType, String element)
+	{
+		try {
+			waitElement(driver, elementType, element);
+			WebElement elem = findWebElement(driver, elementType, element);
+			Select dropdown = new Select(elem);
+			List<WebElement> l = dropdown.getOptions();
+	        for(int i=0;i<l.size();i++)
+	        {
+	        	dropdown.selectByIndex(i);
+	        }
+			Runner.sleep(100L);
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	}
+
+	/*
+	 * Function name : selectSingleItem(RemoteWebDriver driver,int
+	 * elementType,String element, int index)
+	 * 
+	 * Access method : Element.selectSingleItem(elementType,element,index);
+	 * 
+	 * Description: The given index item will be selected in the given dropdown
+	 * list.
+	 * 
+	 * Variables: Name | Type | Values | Description
+	 * ----------------------------
+	 * -----------------------------------------------------------------
+	 * elementType | int | Element.ID |What type of element click which needs |
+	 * | Element.CLASS |to be used in the has to be mentioned | | Element.CSS
+	 * |here | | Element.XPATH | | | Element.LINK | | | Element.PARTIALLINK | |
+	 * | Element.NAME | | | Element.TAGNAME |
+	 * ------------------------------------
+	 * --------------------------------------------------------- element |
+	 * String | NA |The value of the element which can be | | |stored in
+	 * corresponding page element files.
+	 * ----------------------------------------
+	 * ----------------------------------------------------- index | int | NA
+	 * |The index which needs to be clicked in the | | |dropdown element
+	 * --------
+	 * ------------------------------------------------------------------
+	 * -------------------
+	 */
+
+	public static void selectSingleItem(RemoteWebDriver driver,
+			int elementType, String element, int index) {
+
+		try {
+			waitElement(driver, elementType, element);
+			WebElement elem = findWebElement(driver, elementType, element);
+			Select dropdown = new Select(elem);
+			dropdown.selectByIndex(index);
+			Runner.sleep(100L);
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	}
+
+	/*
+	 * Function name : isDisplayed(RemoteWebDriver driver,int elementType,String
+	 * element)
+	 * 
+	 * Access method : Element.isDisplayed(elementType,element);
+	 * 
+	 * Description: It will check whether requested element is present or not on
+	 * the given page The requested element will be clicked on the given page
+	 * 
+	 * Variables: Name | Type | Values | Description
+	 * ----------------------------
+	 * -----------------------------------------------------------------
+	 * elementType | int | Element.ID |What type of element click which needs |
+	 * | Element.CLASS |to be used in the has to be mentioned | | Element.CSS
+	 * |here | | Element.XPATH | | | Element.LINK | | | Element.PARTIALLINK | |
+	 * | Element.NAME | | | Element.TAGNAME |
+	 * ------------------------------------
+	 * --------------------------------------------------------- element |
+	 * String | NA |The value of the element which can be | | |stored in
+	 * corresponding page element files.
+	 * ----------------------------------------
+	 * -----------------------------------------------------
+	 */
+
+	public static boolean isDisplayed(RemoteWebDriver driver, int elementType,
+			String element) {
+
+		try {
+			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+			WebElement elem = findWebElement(driver, elementType, element);
+			if (elem.isDisplayed())
+				return true;
+		}
+
+		catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+		return false;
+	}
+    
+	public static boolean isDisplayed(RemoteWebDriver driver, int elementType,
+			String element,int timeout) {
+
+		try {
+			driver.manage().timeouts().implicitlyWait(timeout, TimeUnit.SECONDS);
+			WebElement elem = findWebElement(driver, elementType, element);
+			if (elem.isDisplayed())
+				return true;
+		}
+
+		catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+		return false;
+	}
+	/*
+	 * Function name : getAttribute(RemoteWebDriver driver,int
+	 * elementType,String element, String attribute)
+	 * 
+	 * Access method : Element.getAttribute(elementType,element,attribute);
+	 * 
+	 * Description: The function returns the String which contains the value of
+	 * the attribute requested.
+	 * 
+	 * Variables: Name | Type | Values | Description
+	 * ----------------------------
+	 * -----------------------------------------------------------------
+	 * elementType | int | Element.ID |What type of element click which needs |
+	 * | Element.CLASS |to be used in the has to be mentioned | | Element.CSS
+	 * |here | | Element.XPATH | | | Element.LINK | | | Element.PARTIALLINK | |
+	 * | Element.NAME | | | Element.TAGNAME |
+	 * ------------------------------------
+	 * --------------------------------------------------------- element |
+	 * String | NA |The value of the element which can be | | |stored in
+	 * corresponding page element files.
+	 * ----------------------------------------
+	 * ----------------------------------------------------- attribute | String
+	 * | NA |The attribute values which the user needs | | |from the current
+	 * element node
+	 * --------------------------------------------------------------
+	 * -------------------------------
+	 * 
+	 * Return value: Type | Description
+	 * ------------------------------------------
+	 * --------------------------------------------------- String | The
+	 * attribute value present for the corresponding element node will be |
+	 * returned.
+	 */
+
+	public static String getAttribute(RemoteWebDriver driver, int elementType,
+			String element, String attribute) {
+
+		String value = null;
+		try {
+			waitElement(driver, elementType, element);
+			WebElement elem = findWebElement(driver, elementType, element);
+			value = elem.getAttribute(attribute);
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+		return value;
+	}
+
+	/*
+	 * Function name : getText(RemoteWebDriver driver,int elementType,String
+	 * element, String text)
+	 * 
+	 * Access method : Element.getText(elementType,element,text);
+	 * 
+	 * Description: The function returns the String which contains the value of
+	 * the text requested.
+	 * 
+	 * Variables: Name | Type | Values | Description
+	 * ----------------------------
+	 * -----------------------------------------------------------------
+	 * elementType | int | Element.ID |What type of element click which needs |
+	 * | Element.CLASS |to be used in the has to be mentioned | | Element.CSS
+	 * |here | | Element.XPATH | | | Element.LINK | | | Element.PARTIALLINK | |
+	 * | Element.NAME | | | Element.TAGNAME |
+	 * ------------------------------------
+	 * --------------------------------------------------------- element |
+	 * String | NA |The value of the element which can be | | |stored in
+	 * corresponding page element files.
+	 * ----------------------------------------
+	 * ----------------------------------------------------- text | String | NA
+	 * |The text values which the user needs | | |from the current element node
+	 * --
+	 * ------------------------------------------------------------------------
+	 * -------------------
+	 * 
+	 * Return value: Type | Description
+	 * ------------------------------------------
+	 * --------------------------------------------------- String | The text
+	 * value present for the corresponding element node will be | returned.
+	 */
+
+	public static String getText(RemoteWebDriver driver, int elementType,
+			String element) {
+
+		String value = "";
+		try {
+			
+			value = findWebElement(driver, elementType, element).getText();
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+		return value;
+	}
+
+	/*
+	 * Function name : getText(RemoteWebDriver driver,int elementType,String
+	 * element, String text)
+	 * 
+	 * Access method : Element.getText(elementType,element,text);
+	 * 
+	 * Description: The function returns the String which contains the value of
+	 * the text requested.
+	 * 
+	 * Variables: Name | Type | Values | Description
+	 * ----------------------------
+	 * -----------------------------------------------------------------
+	 * elementType | int | Element.ID |What type of element click which needs |
+	 * | Element.CLASS |to be used in the has to be mentioned | | Element.CSS
+	 * |here | | Element.XPATH | | | Element.LINK | | | Element.PARTIALLINK | |
+	 * | Element.NAME | | | Element.TAGNAME |
+	 * ------------------------------------
+	 * --------------------------------------------------------- element |
+	 * String | NA |The value of the element which can be | | |stored in
+	 * corresponding page element files.
+	 * ----------------------------------------
+	 * ----------------------------------------------------- text | String | NA
+	 * |The text values which the user needs | | |from the current element node
+	 * --
+	 * ------------------------------------------------------------------------
+	 * -------------------
+	 * 
+	 * Return value: Type | Description
+	 * ------------------------------------------
+	 * --------------------------------------------------- String | The text
+	 * value present for the corresponding element node will be | returned.
+	 */
+
+	public static String getValue(RemoteWebDriver driver, int elementType,
+			String element) {
+
+		String value = "";
+		try {
+			value = findWebElement(driver, elementType, element).getAttribute(
+					"value");
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+		return value;
+	}
+
+	/*
+	 * Function name : dragElementToElement(RemoteWebDriver driver,int
+	 * elementType,String element, String text)
+	 * 
+	 * Access method : Element.dragElementToElement(elementType,element,text);
+	 * 
+	 * Description: The function that drags an item from one location and then
+	 * drop it at another location
+	 * 
+	 * Variables: Name | Type | Values | Description
+	 * ----------------------------
+	 * -----------------------------------------------------------------
+	 * elementType | int | Element.ID |What type of element click which needs |
+	 * | Element.CLASS |to be used in the has to be mentioned | | Element.CSS
+	 * |here | | Element.XPATH | | | Element.LINK | | | Element.PARTIALLINK | |
+	 * | Element.NAME | | | Element.TAGNAME |
+	 * ------------------------------------
+	 * --------------------------------------------------------- source | String
+	 * | NA |The value of the source which needs to be | | |dragged and dropped
+	 * in another location
+	 * ------------------------------------------------------
+	 * ---------------------------------------- target | String | NA |The value
+	 * of the target where the source | | |has to be dropped.
+	 * --------------------
+	 * -------------------------------------------------------------------------
+	 */
+
+	public static String dragElementToElement(RemoteWebDriver driver,
+			int elementType, String source, String target) {
+
+		String value = null;
+		try {
+			WebElement from = findWebElement(driver, elementType, source);
+			WebElement to = findWebElement(driver, elementType, target);
+			Actions builder = new Actions(driver);
+			// builder.dragAndDrop(from, to).perform();
+			Action dragAndDrop = builder.clickAndHold(from).moveToElement(to)
+					.release(to).build();
+			dragAndDrop.perform();
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ source);
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ target);
+		}
+		return value;
+	}
+
+	/*
+	 * Function name : waitForElementPresent(RemoteWebDriver driver,int
+	 * elementType,String element)
+	 * 
+	 * Access method : Element.waitForElementPresent(elementType,element);
+	 * 
+	 * Description: It will wait until the requested element becomes visible on
+	 * the given page
+	 * 
+	 * Variables: Name | Type | Values | Description
+	 * ----------------------------
+	 * -----------------------------------------------------------------
+	 * elementType | int | Element.ID |What type of element click which needs |
+	 * | Element.CLASS |to be used in the has to be mentioned | | Element.CSS
+	 * |here | | Element.XPATH | | | Element.LINK | | | Element.PARTIALLINK | |
+	 * | Element.NAME | | | Element.TAGNAME |
+	 * ------------------------------------
+	 * --------------------------------------------------------- element |
+	 * String | NA |The value of the element which can be | | |stored in
+	 * corresponding page element files.
+	 * ----------------------------------------
+	 * -----------------------------------------------------
+	 */
+
+	public static void waitForElementPresent(RemoteWebDriver driver,
+			int elementType, String element) {
+
+		try {
+			WebDriverWait wait = new WebDriverWait(driver, 15);
+			
+			switch (elementType) {
+			case ID:
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By
+						.id(element)));
+				break;
+			case CLASS:
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By
+						.className(element)));
+				break;
+			
+			case CSS:
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By
+						.cssSelector(element)));
+				break;
+				
+			case XPATH:
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By
+						.xpath(element)));
+				break;	
+				
+			case LINK:
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By
+						.linkText(element)));
+				break;
+				
+			case PARTIALLINK:
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By
+						.partialLinkText(element)));
+				break;	
+			
+			case NAME:
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By
+						.name(element)));
+				break;	
+				
+			case TAGNAME:
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By
+						.tagName(element)));
+				break;	
+				
+				
+			default:
+				System.out.println("Invalid Selector Type");
+				break;
+			}
+			
+			/**
+			Original code -- changed availability for different locators
+			wait.until(ExpectedConditions.visibilityOfElementLocated(By
+					.id(element)));
+									
+			**/		
+			
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	}
+
+	/*
+	 * Function name : waitForElementDisappeared(RemoteWebDriver driver,int
+	 * elementType,String element)
+	 * 
+	 * Access method : Element.waitForElementDisappeared(elementType,element);
+	 * 
+	 * Description: It will wait until the requested element becomes invisible
+	 * on the given page
+	 * 
+	 * Variables: Name | Type | Values | Description
+	 * ----------------------------
+	 * -----------------------------------------------------------------
+	 * elementType | int | Element.ID |What type of element click which needs |
+	 * | Element.CLASS |to be used in the has to be mentioned | | Element.CSS
+	 * |here | | Element.XPATH | | | Element.LINK | | | Element.PARTIALLINK | |
+	 * | Element.NAME | | | Element.TAGNAME |
+	 * ------------------------------------
+	 * --------------------------------------------------------- element |
+	 * String | NA |The value of the element which can be | | |stored in
+	 * corresponding page element files.
+	 * ----------------------------------------
+	 * -----------------------------------------------------
+	 */
+	
+	
+	public static void waitForElementDisappeared(RemoteWebDriver driver,
+			int elementType, String element) {
+
+		try {
+
+			WebDriverWait wait = new WebDriverWait(driver, 15);
+			switch(elementType){
+			case ID:
+				 wait.until(ExpectedConditions.invisibilityOfElementLocated(By
+				.id(element)));
+				break;
+			case CLASS:
+				wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className(element)));
+				break;
+			case CSS:
+				wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(element)));
+				break;
+			case XPATH:
+				wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(element)));
+				break;
+			case LINK:
+				wait.until(ExpectedConditions.invisibilityOfElementLocated(By.partialLinkText(element)));
+				break;
+			case PARTIALLINK:
+				wait.until(ExpectedConditions.invisibilityOfElementLocated(By.partialLinkText(element)));
+				break;
+			case NAME:
+				wait.until(ExpectedConditions.invisibilityOfElementLocated(By.name(element)));
+				break;
+			case TAGNAME:
+				wait.until(ExpectedConditions.invisibilityOfElementLocated(By.tagName(element)));
+				break;
+			default:
+				break;
+			}
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	}
+	
+	/**
+	 * Finds locator and locator type from UI mapping XML file for Dynamic Xpath with one value. 
+	 *
+	 * @param locatorname - the locator name. Eg. login_username where login is the node and username is child.
+	 * @return the By
+	 */
+	/*public By findByDynXpath(String locatorName, String object) {
+		logger.info("Started findByDynXpath with locatorName and Object");
+		By by=null;
+		String locator=getLocatorFromXml(locatorName).replaceAll("@1@", object);
+		by= By.xpath(locator);
+		logger.info("Ended findByDynXpath  with locatorName and Object");
+		return by;
+	}*/
+
+	/**
+	 * Finds locator and locator type from UI mapping XML file for Dynamic Xpath with one an array of values. 
+	 *
+	 * @param locatorname - the locator name. Eg. login_username where login is the node and username is child.
+	 * @return the By
+	 */
+	/*public By findByDynXpath(String locatorName, String[] object) {
+		logger.info("Started findByDynXpath with locatorName and Object array");
+		By by=null;
+		String locator=getLocator(locatorName);
+		int i=1;
+		for(String value : object)
+		{
+			locator = locator.replaceAll("@"+i+"@", value);
+			i++ ;
+		}
+
+		by= By.xpath(locator);
+		logger.info("Ended findByDynXpath with locatorName and Object array");
+		return by;
+	}
+	*/
+	/*
+	 * Function name : getSize()
+	 * 
+	 * Access method : Element.getSize();
+	 * 
+	 * Description: Get the Size of the elments and return an integer value .
+	 * 
+	 * Variables: NA
+	 */
+	public static int getSize(RemoteWebDriver driver, int elementType,
+			String element) {
+		int size = 0;
+		try {
+			List<WebElement> elem = findWebElements(driver, elementType,
+					element);
+			size = elem.size();
+			// elem.click();
+
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+		return size;
+	}
+
+	/*
+	 * Function name : getElementFocusText()
+	 * 
+	 * Access method : Element.getElementFocusText();
+	 * 
+	 * Description: Get the Focus to the element .
+	 * 
+	 * Variables: NA
+	 */
+
+	public static String getElementFocusText(RemoteWebDriver driver,
+			String element) {
+		String focusElementText = "";
+		try {
+			focusElementText = driver.switchTo().activeElement().getText();
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error while focussing the element :"
+					+ element);
+		}
+		return focusElementText;
+	}
+
+	/*
+	 * Function name : pressTabKeys()
+	 * 
+	 * Access method : Element.pressTabKeys();
+	 * 
+	 * Description: Press the tab key from the keyboard
+	 * 
+	 * Variables: NA
+	 */
+
+	public static void pressTabKeys(RemoteWebDriver driver, int noOfTime)
+			 {
+		Actions builder = new Actions(driver);
+		for (int i = 0; i < noOfTime; i++) {
+			builder.sendKeys(Keys.TAB).build().perform();
+			Runner.sleep(1000L);
+		}
+	}
+
+	/*
+	 * Function name : clickOnMultipleTabs()
+	 * 
+	 * Access method : Element.clickOnMultipleTabs();
+	 * 
+	 * Description: Clicks on Multiple Tabs
+	 * 
+	 * Variables: NA
+	 */
+
+	public static int clickOnMultipleTabs(RemoteWebDriver driver,
+			int elementType, String element) {
+		int size = 0;
+		try {
+			List<WebElement> elem = findWebElements(driver, elementType,
+					element);
+			for (WebElement tabs : elem) {
+				tabs.click();
+				Runner.sleep(3000L);
+
+			}
+			size = elem.size();
+			// elem.click();
+
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+		return size;
+	}
+
+	/*
+	 * Function name : goBack()
+	 * 
+	 * Access method : Element.goBack();
+	 * 
+	 * Description: Navigates to back in the browser
+	 * 
+	 * Variables: NA
+	 */
+
+	public static void goBack(RemoteWebDriver driver) {
+		driver.navigate().back();
+		// driver.switchTo().defaultContent();
+		Runner.sleep(1000L);
+
+	}
+
+	/*
+	 * Function name : windowTitle()
+	 * 
+	 * Access method : Element.windowTitle();
+	 * 
+	 * Description: Gets the title of the window
+	 * 
+	 * Variables: NA
+	 */
+
+	public static String windowTitle(RemoteWebDriver driver) {
+		String windowTitle = driver.getTitle();
+		return windowTitle;
+	}
+
+	/*
+	 * Function name : pressSpaceKeys()
+	 * 
+	 * Access method : Element.pressSpaceKeys();
+	 * 
+	 * Description: Presses the Space key from the keyboard
+	 * 
+	 * Variables: NA
+	 */
+
+	public static void pressSpaceKeys(RemoteWebDriver driver)
+			throws InterruptedException {
+		Actions builder = new Actions(driver);
+		builder.sendKeys(Keys.SPACE);
+		Runner.sleep(1000L);
+	}
+
+	public static void pressEnterKeys(RemoteWebDriver driver)
+			throws InterruptedException {
+		Actions builder = new Actions(driver);
+		builder.sendKeys(Keys.ENTER);
+		Runner.sleep(1000L);
+	}
+	/*
+	 * Function name : getTextFromAlertBox()
+	 * 
+	 * Access method : Element.getTextFromAlertBox();
+	 * 
+	 * Description: Return the text from the alert box
+	 * 
+	 * Variables: NA
+	 */
+
+	public static String getTextFromAlertBox(RemoteWebDriver driver) {
+		String text = "";
+		try {
+			Alert alert = driver.switchTo().alert();
+			text = alert.getText();
+			alert.accept();
+		} catch (Exception e) {
+		}
+
+		return text;
+	}
+
+	/*
+	 * Function name : getPageSource()
+	 * 
+	 * Access method : Element.getPageSource();
+	 * 
+	 * Description: Returns the html source code of the page
+	 * 
+	 * Variables: NA
+	 */
+
+	public static String getPageSource(RemoteWebDriver driver) {
+		String pageSource = driver.getPageSource();
+		Runner.sleep(3000L);
+		return pageSource;
+	}
+
+	/*
+	 * Function name : clearTextBox()
+	 * 
+	 * Access method : Element.clearTextBox();
+	 * 
+	 * Description: Clears the text from the text box
+	 * 
+	 * Variables: NA
+	 */
+
+	public static void clearTextBox(RemoteWebDriver driver, String element) {
+	    Element.waitElement(driver, Element.XPATH, element); 
+		findWebElement(driver, Element.XPATH, element).clear();
+		Runner.sleep(757L);
+	}
+	
+	
+	/*
+	 * Function name : clearTextBoxUsingID()
+	 * 
+	 * Access method : Element.clearTextBoxUsingID();
+	 * 
+	 * Description: Clears the text from the text box
+	 * 
+	 * Variables: NA
+	 */
+
+	public static void clearTextBoxUsingID(RemoteWebDriver driver, String element) {
+		findWebElement(driver, Element.ID, element).clear();
+		Runner.sleep(3000L);
+	}
+	
+
+	/*
+	 * Function name : switchFrame()
+	 * 
+	 * Access method : Element.switchFrame();
+	 * 
+	 * Description: Switches to the frame
+	 * 
+	 * Variables: NA
+	 */
+
+	public static void switchFrame(RemoteWebDriver driver, String frameName) {
+		driver.switchTo().frame(frameName);
+		Runner.sleep(2000L);
+	}
+	
+	/*
+	 * Function name : switchFrame()
+	 * 
+	 * Access method : Element.switchFrame();
+	 * 
+	 * Description: Switches to the frame using index
+	 * 
+	 * Variables: NA
+	 */
+
+	public static void switchFrame_index(RemoteWebDriver driver, int arg) {
+		driver.switchTo().frame(arg);
+		Runner.sleep(2000L);
+	}
+
+	/*
+	 * Function name : hoverAndClickOnMultipleMenus()
+	 * 
+	 * Access method : Element.hoverAndClickOnMultipleMenus();
+	 * 
+	 * Description: Hovers and clicks on the multiple menus
+	 * 
+	 * Variables: NA
+	 */
+
+	public static void hoverAndClickOnMultipleMenus(RemoteWebDriver driver,
+			int elementType, String element1, String element2, String element3) {
+
+		try {
+			WebElement elem1 = findWebElement(driver, elementType, element1);
+			WebElement elem2 = findWebElement(driver, elementType, element2);
+			WebElement elem3 = findWebElement(driver, elementType, element3);
+			Actions mouse = new Actions(driver);
+			mouse.moveToElement(elem1).moveToElement(elem2)
+					.moveToElement(elem3).click().perform();
+		
+			waitForPageLoaded(driver);
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ e);
+		}
+	}
+
+	/*
+	 * Function name : waitForPageLoaded()
+	 * 
+	 * Access method : Element.waitForPageLoaded();
+	 * 
+	 * Description: Wait for page to load completly
+	 * 
+	 * Variables: NA
+	 */
+
+	public static void waitForPageLoaded(WebDriver driver) {
+
+		ExpectedCondition<Boolean> expectation = new ExpectedCondition<Boolean>() {
+			public Boolean apply(WebDriver driver) {
+				return ((JavascriptExecutor) driver).executeScript(
+						"return document.readyState").equals("complete");
+			}
+		};
+		
+		
+
+		Wait<WebDriver> wait = new WebDriverWait(driver, 40);
+		try {
+			wait.until(expectation);
+		} catch (Throwable error) {
+			Log.write("Page Load Timeout waiting for Page Load Request to complete.");
+			driver.navigate().refresh();
+		}
+	}
+	
+	
+	
+	
+	/*
+	 * Function name : waitForPageLoaded()
+	 * 
+	 * Access method : Element.waitForPageLoaded();
+	 * 
+	 * Description: Wait for page to load completly. if the page is not loaded do a re click on the URL 
+	 * 
+	 * Variables: NA
+	 */
+	
+	
+	public static void waitForPageLoadedElserefresh(WebDriver driver, String URL) {
+
+		ExpectedCondition<Boolean> expectation = new ExpectedCondition<Boolean>() {
+			public Boolean apply(WebDriver driver) {
+				return ((JavascriptExecutor) driver).executeScript(
+						"return document.readyState").equals("complete");
+			}
+		};
+		
+		
+
+		Wait<WebDriver> wait = new WebDriverWait(driver, 40);
+		try {
+			wait.until(expectation);
+		} catch (Throwable error) {
+			Log.write("Page Load Timeout waiting for Page Load Request to complete.");
+			driver.navigate().refresh();
+		}
+	}
+	
+	
+	/*
+	 * Function name : waitForPageLoadedRemoteWebDriver()
+	 * 
+	 * Access method : Element.waitForPageLoaded();
+	 * 
+	 * Description: Wait for page to load completely
+	 * 
+	 * Variables: NA
+	 */
+	public static void waitForPageLoadedRemoteWebDriver(RemoteWebDriver driver) {
+
+		ExpectedCondition<Boolean> expectation = new ExpectedCondition<Boolean>() {
+			public Boolean apply(WebDriver driver) {
+				return ((JavascriptExecutor) driver).executeScript(
+						"return document.readyState").equals("complete");
+			}
+		};
+		
+		
+
+		Wait<WebDriver> wait = new WebDriverWait(driver, 30);
+		try {
+			wait.until(expectation);
+		} catch (Throwable error) {
+			Log.write("Page Load Timeout waiting for Page Load Request to complete.");
+			driver.navigate().refresh();
+		}
+	}
+	
+	/*
+	 * Function name : isAlertBoxPresent()
+	 * 
+	 * Access method : Element.isAlertBoxPresent();
+	 * 
+	 * Description: Checks alert box present or not
+	 * 
+	 * Variables: NA
+	 */
+
+	public static boolean isAlertBoxPresent(RemoteWebDriver driver) {
+		try {
+			driver.switchTo().alert();
+			return true; 
+		}
+
+		catch (Exception e) {
+			Log.write("Alert Box is not displayed");
+			return false; 
+		}
+	}
+
+	/*
+	 * Function name : isAlertBoxPresent()
+	 * 
+	 * Access method : Element.inputTextArea();
+	 * 
+	 * Description: Input the text into the text area
+	 * 
+	 * Variables: NA
+	 */
+
+	public static void inputTextArea(RemoteWebDriver driver, int elementType,
+			String element, String text) {
+
+		try {
+			WebElement elem = findWebElement(driver, elementType, element);
+			// elem.clear();
+			elem.sendKeys(Keys.TAB, text);
+			Runner.sleep(3000L);
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	}
+
+	/*
+	 * Function name : switchToDefaultContent()
+	 * 
+	 * Access method : Element.switchToDefaultContent();
+	 * 
+	 * Description: Switch the control to the main window
+	 * 
+	 * Variables: NA
+	 */
+
+	public static void switchToDefaultContent(RemoteWebDriver driver) {
+		driver.switchTo().defaultContent();
+		Runner.sleep(2000L);
+	}
+
+	/*
+	 * Function name : IsElementPresentFromList()
+	 * 
+	 * Access method : Element.IsElementPresentFromList();
+	 * 
+	 * Description: Checks the element present in the list of available elements
+	 * 
+	 * Variables: NA
+	 */
+
+	public static boolean IsElementPresentFromList(RemoteWebDriver driver,
+			int elementType, String element, String text) {
+		List<WebElement> elementList = findWebElements(driver, elementType,
+				element);
+		boolean status = false;
+		for (WebElement elements : elementList) {
+			if (elements.getText().equals(text))
+				status = true;
+
+			else
+				status = false;
+		}
+
+		return status;
+	}
+
+	/*
+	 * Function name : clickSpecificElementChkBoxFromList()
+	 * 
+	 * Access method : Element.clickSpecificElementChkBoxFromList();
+	 * 
+	 * Description: Checks the particular check box present in the list of
+	 * available checkboxes
+	 * 
+	 * Variables: NA
+	 */
+	public static boolean clickSpecificElementChkBoxFromList (RemoteWebDriver driver,
+			int elementType, String element,String text) {
+		List<WebElement> elementList = findWebElements(driver, elementType,
+				element);
+		int counter=1;
+		
+         boolean status=false;
+		for (WebElement elements : elementList) {
+			if (elements.equals(text))
+			{
+			String xpath ="//div[@class='rush_buy_developer']//table[@id='ver-prebook']//tbody//tr['"+counter+"']//input[@type='checkbox']";
+			Element.click(driver,Element.XPATH,xpath);
+			}
+			else
+			counter++;
+		}
+		
+		return status;
+	}
+
+	/*
+	 * Function name : checkSpecificElementxFromList()
+	 * 
+	 * Access method : Element.checkSpecificElementxFromList();
+	 * 
+	 * Description: Checks the particular check box present in the list of
+	 * available checkboxes
+	 * 
+	 * Variables: NA
+	 */
+
+	public static boolean checkSpecificElementxFromList(RemoteWebDriver driver,
+			int elementType, String element, String text) {
+		List<WebElement> elementList = findWebElements(driver, elementType,
+				element);
+		int counter=1;
+		
+         boolean status=false;
+		for (WebElement elements : elementList) {
+			if (elements.equals(text))
+			{
+			String xpath ="//div[@class='rush_buy_developer']//table[@id='ver-prebook']//tbody//tr['"+counter+"']//input[@type='checkbox']";
+			Element.click(driver,Element.XPATH,xpath);
+			}
+			else
+			counter++;
+		}
+		
+		return status;
+	}
+
+	/*
+	 * Function name : IsHyperLinkPresentFromList()
+	 * 
+	 * Access method : Element.IsHyperLinkPresentFromList();
+	 * 
+	 * Description: Checks the particular hyperlink present in the list of
+	 * available elements hyperlinks
+	 * 
+	 * Variables: NA
+	 */
+
+	public static boolean IsHyperLinkPresentFromList(RemoteWebDriver driver,
+			int elementType, String element) {
+		List<WebElement> elementList = findWebElements(driver, elementType,
+				element);
+		boolean status = false;
+		for (WebElement elements : elementList) {
+			if (elements.getAttribute("href") != null)
+				status = true;
+
+			else
+				status = false;
+		}
+		
+		return status;
+	}
+
+	/*
+	 * Function name : clickSpecificElementFromList()
+	 * 
+	 * Access method : Element.clickSpecificElementFromList();
+	 * 
+	 * Description: Clicks on the particular element from the list of available
+	 * elements
+	 * 
+	 * Variables: NA
+	 */
+
+	public static void clickSpecificElementFromList(RemoteWebDriver driver,
+			int elementType, String element) {
+		List<WebElement> elementList = findWebElements(driver, elementType,
+				element);
+		 
+		for (WebElement elements : elementList) {
+			elements.click();
+			break;
+	   	}
+		
+		
+	}
+
+	/*
+	 * Function name : clickOkOnAlertBox()
+	 * 
+	 * Access method : Element.clickOkOnAlertBox();
+	 * 
+	 * Description: Clicks Ok on the alert box
+	 * 
+	 * Variables: NA
+	 */
+
+	public static void clickOkOnAlertBox(RemoteWebDriver driver) {
+		try {
+			Runner.sleep(3000L);
+			Alert alert = driver.switchTo().alert();
+			alert.accept();
+		} catch (Exception e) {
+		}
+
+		}
+	/*
+	 * Function name : hoverOnMultipleMenus()
+	 * 
+	 * Access method : Element.hoverOnMultipleMenus();
+	 * 
+	 * Description: Hovers on the multiple menus
+	 * 
+	 * Variables: NA
+	 */
+	public static void hoverOnMultipleMenus(RemoteWebDriver driver,
+			int elementType, String element1, String element2, String element3) {
+
+		try {
+			WebElement elem1 = findWebElement(driver, elementType, element1);
+			WebElement elem2 = findWebElement(driver, elementType, element2);
+			WebElement elem3 = findWebElement(driver, elementType, element3);
+			Actions mouse = new Actions(driver);
+			mouse.moveToElement(elem1).moveToElement(elem2)
+					.moveToElement(elem3).build().perform();
+			
+
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ e);
+		}
+		
+		
+	}
+	/*
+	 * Function name : switchWindowTab()
+	 * 
+	 * Access method : Element.switchWindowTab();
+	 * 
+	 * Description: Switch to the multiple windows
+	 * 
+	 * Variables: NA
+	 */
+	public static void switchWindowTab(RemoteWebDriver driver)
+	{
+		try{
+		Iterator<String> s = driver.getWindowHandles().iterator();
+		while(s.hasNext())
+		{
+			String w = s.next();
+			driver.switchTo().window(w);
+			
+		}
+		
+		}catch(Exception e)
+		{
+			System.out.println("No new window");
+		}
+	}
+	
+	public static void contextClick(RemoteWebDriver driver, int elementType,
+			String element)
+	{
+		WebElement elem = findWebElement(driver, elementType, element);
+		Actions action = new Actions(driver);
+		action.contextClick(elem).perform();
+		action.sendKeys("W").perform();
+	}
+
+	/*
+	 * Function name : javaScriptClick()
+	 * 
+	 * Access method : Element.javaScriptClick();
+	 * 
+	 * Description: Clicks on the element using java script executor
+	 * 
+	 * Variables: NA
+	 */
+	 
+	 public static void javaScriptClick(RemoteWebDriver driver, String element) {
+	
+		WebElement webElement = Element.findWebElement(driver, Element.XPATH,
+				element);
+		JavascriptExecutor executor = (JavascriptExecutor) driver;
+		executor.executeScript("arguments[0].click();", webElement);
+	}
+	 
+	 
+	 /*
+	 * Function name : getNewWindowTitle()
+	 * 
+	 * Access method : Element.getNewWindowTitle();
+	 * 
+	 * Description: Obtains the title of the new window opened
+	 * 
+	 * Variables: NA
+	 */
+	 
+	 	public static String getNewWindowTitle(RemoteWebDriver driver) {
+		String title = "";
+		try {
+			String s = driver.getWindowHandle();
+
+			for (String winHandle : driver.getWindowHandles()) {
+				driver.switchTo().window(winHandle);
+				title = windowTitle(driver);
+			}
+			driver.close();
+			driver.switchTo().window(s);
+
+		} catch (Exception e) {
+			System.out.println("No new window");
+		}
+		return title;
+	}
+	 
+	
+  //added new
+	
+	public static void switchMainWindow(RemoteWebDriver driver)
+	{
+		
+		Iterator<String> window = driver.getWindowHandles().iterator();
+		while(window.hasNext())
+		{
+			String switch_window = window.next();
+			driver.switchTo().window(switch_window);
+			
+		}
+			
+	}
+	
+	public static void InputText_Tab (RemoteWebDriver driver, int elementType,
+			String element, String text) {
+		try {
+			WebElement elem = findWebElement(driver, elementType, element);
+			// elem.clear();
+			elem.sendKeys(text);
+			elem.sendKeys(Keys.TAB);
+			Runner.sleep(3000L);
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	}
+	
+	//to be added
+	
+   public static void WaitforPageload_specificTime(RemoteWebDriver driver)
+   {
+	   try{
+	       driver.manage().timeouts().pageLoadTimeout(1, TimeUnit.MINUTES);
+	   
+	   }catch(Exception e)
+	   {
+		   
+	   }
+   }
+   
+   public static void Slidebar(RemoteWebDriver driver, int elementType, String element, int xaxis)
+   {
+	   try {
+			WebElement elem = findWebElement(driver, elementType, element);
+			Actions mouse = new Actions(driver);
+			mouse.moveToElement(elem).build().perform();
+			mouse.dragAndDropBy(elem, xaxis, 0).build().perform();
+			Runner.sleep(100L);
+
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+   }
+   public static List<WebElement> findWebElements_1(RemoteWebDriver driver,int elementType,String using){
+		List<WebElement>  ret = null;
+		switch(elementType){
+			case ID:
+				ret = driver.findElements(By.id(using));
+				break;
+			case CLASS:
+				ret = driver.findElements(By.className(using));
+				break;
+			case CSS:
+				ret = driver.findElements(By.cssSelector(using));
+				break;
+			case XPATH:
+				ret = driver.findElements(By.xpath(using));
+				break;
+			case LINK:
+				ret = driver.findElements(By.linkText(using));
+				break;
+			case PARTIALLINK:
+				ret = driver.findElements(By.partialLinkText(using));
+				break;
+			case NAME:
+				ret= driver.findElements(By.name(using));
+				break;
+			case TAGNAME:
+				ret= driver.findElements(By.tagName(using));
+				break;
+			default:
+				ret = null;
+				break;
+		}
+		
+		return ret;
+	}
+   public static void selectAllOptions(RemoteWebDriver driver,
+			int elementType, String element, String text) {
+        
+		try {
+			WebElement elem = findWebElement(driver, elementType, element);
+			Select dropdown = new Select(elem);
+			List<WebElement> selectedOption = dropdown.getOptions();
+			for(int i=1;i<selectedOption.size();i++)
+			{
+				String s = selectedOption.get(i).getText();
+				if(s.contains(text))
+				{
+					
+				}
+				
+			}
+			Runner.sleep(100L);
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	}
+   
+   public static void enterDataIntoEditor(RemoteWebDriver driver,String contentPath, String content){
+	   
+	   
+	   driver.findElement(By.xpath(contentPath)).sendKeys(Keys.SPACE);
+	   driver.findElement(By.xpath(contentPath)).sendKeys(Keys.END);
+	   //Runner.sleep(1000l);
+	   //driver.findElement(By.xpath(contentPath)).sendKeys(Keys.SPACE);
+	   Runner.sleep(1000l);
+	   driver.findElement(By.xpath(contentPath)).sendKeys(content);
+	   Runner.sleep(1000l);
+	   
+	   
+   }
+   public static String getWindowTitle(RemoteWebDriver driver)
+   {
+	   String s=driver.getTitle();
+	   return s;
+   }
+   public static void inputKeysString(RemoteWebDriver driver, int elementType,
+			String element, Keys k) {
+
+		try {
+			WebElement elem = findWebElement(driver, elementType, element);
+			// elem.clear();
+			elem.sendKeys(k);
+			Runner.sleep(3000L);
+			Element.waitForPageLoaded(driver);
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	}
+   
+   public static void screenshot(String imgPath)
+   {
+	   try
+	   {   Capabilities driver = null;
+		WebDriver edriver = new RemoteWebDriver(driver);
+		edriver = new Augmenter().augment(edriver);
+		   String ImgPath=".src/Screenshot/"+imgPath+""+getCurrentTime()+".png";
+		   File f = ( (TakesScreenshot)edriver ).getScreenshotAs(OutputType.FILE);
+		   FileUtils.copyFile(f, new File(ImgPath));
+		   
+	   }catch(Exception e)
+	   {
+		   e.printStackTrace();
+	   }
+   }
+   public static String getCurrentTime()
+   {
+	   DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd.HH-mm-ss");
+	   Date date = new Date();
+	    String d = dateFormat.format(date);
+	    return d;
+	   
+   }
+   public static boolean isChecked(RemoteWebDriver driver, int elementType,
+			String element) {
+
+		try {
+			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+			WebElement elem = findWebElement(driver, elementType, element);
+			if (elem.isSelected())
+				// elem.click();
+				return true;
+		}
+
+		catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+		return false;
+	}
+   public static String selectGetText(RemoteWebDriver driver, int elementType,
+			String element) {
+
+		String value = "";
+		try {
+			WebElement elem = findWebElement(driver, elementType, element);
+			Select dropdown = new Select(elem);
+			WebElement option = dropdown.getFirstSelectedOption();
+			value=option.getText();
+			Runner.sleep(100L);
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+		return value;
+	}
+   
+   public static void waitElement(RemoteWebDriver driver,int elementType,String element)
+   {
+	  
+	   //WebDriver d = new RemoteWebDriver((Capabilities) driver);
+	   //WebDriver w = new RemoteWebDriver((Capabilities) driver);
+	   try {
+	 
+	   WebDriverWait wait = new WebDriverWait(driver, 15);
+	   wait.until(ExpectedConditions.visibilityOf(Element.findWebElement(driver, elementType, element)));
+	   
+	   } catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+   }
+   public static void clearTextBox_New(RemoteWebDriver driver,int elementType, String element) {
+	  
+	    findWebElement(driver, elementType, element).clear();
+		Runner.sleep(2000L);
+	}
+   public static int selectCountOptons(RemoteWebDriver driver,
+			int elementType, String element)
+	{
+		try {
+			WebElement elem = findWebElement(driver, elementType, element);
+			Select dropdown = new Select(elem);
+			List<WebElement> l = dropdown.getOptions();
+			return l.size();
+		}
+		catch(Exception e) {
+			return -1;
+		}
+	}
+   
+   
+	/*
+	 * Function name : isEnabled()
+	 * 
+	 * Access method : Element.isEnabled();
+	 * 
+	 * Description: Checks if Element is enabled. Returns True if Enabled.
+	 * 
+	 * Variables: NA
+	 */
+   public static boolean isEnabled(RemoteWebDriver driver, int elementType,
+			String element){
+	   
+	   boolean status = false;
+	   
+	   try {
+			WebElement elem = findWebElement(driver, elementType, element);
+			status = elem.isEnabled();
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	   
+	   return status;
+   }
+   public static void checkAlert(RemoteWebDriver driver) {
+	    try {
+	    	Runner.sleep(2000L);
+	         WebDriverWait wait = new WebDriverWait(driver, 20);
+	        wait.until(ExpectedConditions.alertIsPresent());
+	        Alert alert = driver.switchTo().alert();
+	        alert.accept();
+	    } catch (Exception e) {
+	        //exception handling
+	    }
+	}
+   /*
+	 * Function name : waitForPageLoaded()
+	 * 
+	 * Access method : Element.waitForPageLoaded();
+	 * 
+	 * Description: Wait for page to load completly
+	 * 
+	 * Variables: NA
+	 */
+
+	public static void waitForPageLoadedforSpecificTime(RemoteWebDriver driver) {
+		driver.manage().timeouts().pageLoadTimeout(13, TimeUnit.SECONDS);
+    }
+	public static void switchFrame_webElement(RemoteWebDriver driver,int elementType,
+			String element)
+	{
+		WebElement elem = findWebElement(driver, elementType, element);
+		driver.switchTo().frame(elem);
+	}
+	public static void switchBackToMainWindow(RemoteWebDriver driver)
+	{
+		driver.switchTo().defaultContent();
+	}
+	
+	/**
+	 * return the Options inside a dropdown
+	 * 
+	 * @param driver
+	 * @param elementType
+	 * @param element
+	 * @return
+	 */
+	
+	
+    public static String[] getDropDownOptions(RemoteWebDriver driver, int elementType,
+				String element) {
+
+			//String value = "";
+    		List<WebElement> options = null;
+    		String[] retrievedValues = null;
+			try {
+				WebElement elem = findWebElement(driver, elementType, element);
+				Select dropdown = new Select(elem);
+				options = dropdown.getOptions();
+				//options.toString();
+				
+				
+				retrievedValues = new String[options.size()];
+				
+				for(int i=0; i<options.size();i++){
+					
+					retrievedValues[i] = options.get(i).getText().trim();
+					//System.out.println("HAHAHAHA  "+retrievedValues[i]);
+				}
+				//value=option.getText();
+				Runner.sleep(1000L);
+			} catch (Exception e) {
+				Log.writeWithBreak("Error: Error locating or operating on the element :"
+						+ element);
+			}
+			return retrievedValues;
+		}
+    /*
+	 * Function name : isElementNotDisplayed()
+	 * 
+	 * Access method : Element.isElementNotDisplayed();
+	 * 
+	 * Description: Checks if Element is Not Displayed. Returns True if not Displayed.
+	 * 
+	 * Variables: NA
+	 */
+    public static boolean isElementNotDisplayed(RemoteWebDriver driver, int elementType,
+			String element) {
+
+		try {
+			driver.manage().timeouts().implicitlyWait(1000, TimeUnit.MILLISECONDS);
+			WebElement elem = findWebElement(driver, elementType, element);
+			if (elem.isDisplayed())
+				return false;
+		}
+
+		catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+		return true;
+	}
+    /*
+	 * Function name : isNotEnabled()
+	 * 
+	 * Access method : Element.isNotEnabled();
+	 * 
+	 * Description: Checks if Element is Disabled. Returns True if Disabled.
+	 * 
+	 * Variables: NA
+	 */
+   public static boolean isNotEnabled(RemoteWebDriver driver, int elementType,
+			String element){
+	   try {
+			WebElement elem = findWebElement(driver, elementType, element);
+			if(elem.isEnabled())
+			return false;
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+	   
+	   return true;
+   }
+   public static void implicitWait(RemoteWebDriver driver, long n)
+   {
+	   driver.manage().timeouts().implicitlyWait(n, TimeUnit.SECONDS);
+   }
+   public static String getURL(RemoteWebDriver driver)
+   {
+	   String url = "";
+	   try{
+		   url=driver.getCurrentUrl();
+	   } catch (Exception e){
+		   Log.writeWithBreak("Error: Error locating or operating on the element :"
+					);
+	   }
+	   return url;
+	}
+   
+   public static void SecurityWarningSelect() throws AWTException
+   {            
+	   Robot r = new Robot();
+	   r.keyPress(KeyEvent.VK_ENTER);
+	   r.keyRelease(KeyEvent.VK_ENTER);
+   }
+   public static void javaScriptClick(RemoteWebDriver driver, int elementType,String element) {
+		try{	
+		 WebElement webElement = Element.findWebElement(driver, elementType,
+					element);
+			JavascriptExecutor executor = (JavascriptExecutor) driver;
+			executor.executeScript("arguments[0].click();", webElement);
+			Element.waitForPageLoaded(driver);
+		}
+		catch(Exception e)
+		{
+			
+		}
+		}
+   
+   public static void javaScriptClickDelete(RemoteWebDriver driver,int elementType, String element) {
+		try{	
+		 WebElement webElement = Element.findWebElement(driver, elementType,
+					element);
+			JavascriptExecutor executor = (JavascriptExecutor) driver;
+			executor.executeScript("arguments[0].click();", webElement);
+		}catch(Exception e)
+		{
+			
+		}
+		}
+   
+	/*
+	 * Function name : getOptionLabelFromDropDownList()
+	 * 
+	 * Access method : Element.getOptionLabelFromDropDownList();
+	 * 
+	 * Description: return label values from dropDownList()
+	 * 
+	 * Variables: NA
+	 */
+	public static String[] getOptionLabelFromDropDownList(RemoteWebDriver driver,int elementType,
+			String element)
+	{
+		List<WebElement> options = null;
+		String[] retrievedValues = null;
+		try {
+			WebElement elem = findWebElement(driver, elementType, element);
+			Select dropdown = new Select(elem);
+			options = dropdown.getOptions();
+			retrievedValues = new String[options.size()];
+			for(int i=0; i<options.size();i++){
+				retrievedValues[i] = options.get(i).getAttribute("label");
+			}
+		} catch (Exception e) {
+			Log.writeWithBreak("Error: Error locating or operating on the element :"
+					+ element);
+		}
+		return retrievedValues;
+	}
+	 
+}
